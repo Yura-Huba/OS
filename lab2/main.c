@@ -8,7 +8,8 @@ int main()
     time_t now;
     struct tm *sp;
 
-    (void) setenv("TZ","America/Los_Angeles",1);
+    if(setenv("TZ","America/Los_Angeles",1))
+        return 1;
 
     (void) time( &now );
 
@@ -19,5 +20,5 @@ int main()
          sp->tm_mon + 1, sp->tm_mday,
          sp->tm_year % 100, sp->tm_hour,
          sp->tm_min, tzname[sp->tm_isdst]);
-    exit(0);
+    return 0;
 }
