@@ -39,6 +39,10 @@ int main()
 			free(t);
 		}
         puts(p->s);
-		t=p;
-	}
+	t=p;
+     }
+     if(t!=NULL){
+	free(t->s);
+	free(t);
+     }
 }
