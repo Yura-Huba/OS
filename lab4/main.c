@@ -60,6 +60,15 @@ int main()
             free(t);
 		}
         puts(p->s);
+<<<<<<< HEAD
         t=p;
 	}
+=======
+	t=p;
+     }
+     if(t!=NULL){
+	free(t->s);
+	free(t);
+     }
+>>>>>>> e6109b6e3c3ff6d920e95552c8fcb0adf745c950
 }
