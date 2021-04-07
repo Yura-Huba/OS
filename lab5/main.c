@@ -4,6 +4,19 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <errno.h>
+
+void closeFile(int *fd){
+    if(close(*fd)==-1){
+        if(errno==EINTR){
+            if(close(*fd)==-1&&errno!=EINTR){;
+                printf("Error close file");
+            }
+        }else{
+            printf("Error close file");
+        }
+    }
+}
 
 int main(int argc, char *argv[]){
      int fd,fdw;
@@ -16,7 +29,7 @@ int main(int argc, char *argv[]){
      }
      if(( fdw =  open(argv[2], O_CREAT|O_WRONLY)) == -1) {
          printf("No find file- %s",argv[2]);
-         close(fd);
+         closeFile(&fd);
          return 1;
      }
 
@@ -26,6 +39,12 @@ int main(int argc, char *argv[]){
              j++;
              line_ln[i++] = j;
              displ[i] = lseek(fd, 0L, 1);
+             if(displ[i]==-1){
+                printf("Error lseek");
+                closeFile(&fd);
+                closeFile(&fdw);
+                return 0;
+             }
              j = 0;
          }
          else
@@ -36,12 +55,20 @@ int main(int argc, char *argv[]){
          if(line_no <= 0)
              return 0;
          lseek(fd, displ[line_no], 0);
+         if(displ[line_no]==-1){
+            printf("Error lseek");
+            break;
+         }
          if(read(fd, &buf, line_ln[line_no])){
-             write(fdw, &buf, line_ln[line_no]);
+             if(write(fdw, &buf, line_ln[line_no])==-1){
+                printf("Error write");
+                break;
+             };
          }
          else
              printf("Bad Line Number\n");
          }
-         close(fd);
-         close(fdw);
+     closeFile(&fd);
+     closeFile(&fdw);
 }
+

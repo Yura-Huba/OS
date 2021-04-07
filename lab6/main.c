@@ -4,8 +4,21 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <string.h>
+#include <errno.h>
 
 #define BUFSIZE 257
+
+void closeFile(int *fd){
+    if(close(*fd)==-1){
+        if(errno==EINTR){
+            if(close(*fd)==-1&&errno!=EINTR){;
+                printf("Error close file");
+            }
+        }else{
+            printf("Error close file");
+        }
+    }
+}
 
 int main(int argc, char *argv[]){
      long displ[500];
@@ -18,7 +31,8 @@ int main(int argc, char *argv[]){
      }
 
      if ((fd2 = open(argv[1], O_RDONLY)) == -1) {
-         printf("Error open -",argv[1]);;
+         printf("Error open -",argv[1]);
+		 closeFile(&fd1);
          return 1;
          }
 
@@ -28,6 +42,12 @@ int main(int argc, char *argv[]){
              j++;
              line_ln[i++] = j;
              displ[i] = lseek(fd2, 0L, 1);
+			 if(displ[i]==-1){
+				 printf("Error lseek");
+				 closeFile(&fd1);
+				 closeFile(&fd2);
+				 return 0;
+			 {
              j = 0;
              }
          else
@@ -38,8 +58,14 @@ int main(int argc, char *argv[]){
          sleep(5);
          if ((i = read(fd1, buf, BUFSIZE)) == 0) {
              lseek(fd2, SEEK_SET, 0);
-             while((i = read(fd2, buf, BUFSIZE)) > 0)
-                 write(1, buf, i);
+             while((i = read(fd2, buf, BUFSIZE)) > 0){
+                 if(write(1, buf, i)==-1){
+					 printf("Error write");
+					 break;
+				 }
+			 }
+			 closeFile(&fd1);
+			 closeFile(&fd2);
              return 0;
          }
          else {
@@ -54,4 +80,7 @@ int main(int argc, char *argv[]){
                  fprintf(stderr, "Bad Line Number\n");
          }
      }
+	 closeFile(&fd1);
+	 closeFile(&fd2);
+	 return 0;
 }
