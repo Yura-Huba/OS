@@ -58,7 +58,7 @@ int main(int argc, char *argv[]){
 	 tv.tv_sec=5;
 	 tv.tv_usec=0;
      char *displ[501];
-     char *p, buf[10];
+     char *p,*f, buf[10];
      int fd1, fd2, count, i = 1, j = 1, line_no, line_ln[500]={0};
      off_t size;
 
@@ -85,7 +85,6 @@ int main(int argc, char *argv[]){
 		 closeFile(&fd2);
 		 return 0;
 	 }
-
      displ[1] = p;
      for(count = 0; count < size; count++)
          if( *(p+count) == '\n' ) {
@@ -119,6 +118,9 @@ int main(int argc, char *argv[]){
                  printf("Bad Line Number\n");
          }
      }
+	 if(!mummap(p,size)){
+		 printf("Error mummap");
+	 }
 	 closeFile(&fd1);
 	 closeFile(&fd2);
 }

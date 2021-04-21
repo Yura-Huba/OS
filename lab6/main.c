@@ -73,6 +73,12 @@ int main(int argc, char *argv[]){
 		 closeFile(&fd1);
          return 1;
      }
+	 int maxfdid;
+	 if(fd1>fd2){
+		 maxfdid=fd1;
+	 }ekse{
+		 maxfdid=fd2;
+	 }
 	 int count;
      while(count=readFile(&fd2,&c,BUFSUZE_C))
 		for(int k=0;k<count;k++){
@@ -99,7 +105,7 @@ int main(int argc, char *argv[]){
 
      while(1){
          printf("you have 5 seconds to enter a line number\n");
-         if (!select(1,&fd1,NULL,NULL,&tv)) {
+         if (!select(maxfdid+1,&fd1,NULL,NULL,&tv)) {
              if(lseek(fd2, SEEK_SET, 0)==-1){
 				 break;
 			 }
