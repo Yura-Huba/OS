@@ -8,10 +8,10 @@ int main(){
 	pid_t pid, childpid;
 	int status;
 	if ((pid = fork()) == 0){
-		if(execl("/bin/cat", "cat", "text.txt", NULL)==-1){
-			printf("Error execl child proc\n");
-			return -1;
-		}
+		execl("/bin/cat", "cat", "text.txt", NULL);
+		printf("Error execl child proc\n");
+		return -1;
+			
 	}else{
 		if(pid<0){
 			printf("Parent fork error\n");

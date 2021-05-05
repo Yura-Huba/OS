@@ -23,6 +23,8 @@ void closeFile(int *fd){
     }
 }
 
+
+
 int writeConsole(char *buf,int whence){
 	if(write(1,buf,whence)==-1){
 		if(errno==EINTR){
